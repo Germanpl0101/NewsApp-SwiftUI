@@ -23,7 +23,7 @@ class NetworkService: ObservableObject, NewsServiceProtocol {
     init()  {
         self.downloadNews()
     }
-    
+   
     func downloadNews() {
         Task {
             self.data = try await fetchNews()
@@ -33,22 +33,20 @@ class NetworkService: ObservableObject, NewsServiceProtocol {
     func fetchNews() async throws -> News {
         
         let (data, response) = try await session.data(from: generatePathURL())
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else { fatalError("Fetching data Error")}
-        
-        let news = try JSONDecoder().decode(News.self, from: data)
-        if news.status == "ok" {
-            return news
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw NewsError.invalidServerError
         }
         
-        return News()
+        let news = try JSONDecoder().decode(News.self, from: data)
+        return  news
     }
     
     private func generatePathURL() -> URL {
         var path = "https://newsapi.org/v2/everything?q=tesla&from=2022-02-16&sortBy=publishedAt&apiKey="
         path += key
         path += "&language=en"
-        
-        return URL(string: path)!
+        guard let url =  URL(string: path) else { fatalError("Bad URL") }
+        return url
     }
     
 }

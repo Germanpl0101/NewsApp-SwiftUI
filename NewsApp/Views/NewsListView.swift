@@ -20,8 +20,8 @@ struct NewsListView: View {
                     VStack {
                         ForEach(listViewModel.articles, id: \.self) { item in
                             Button {
-                                self.listViewModel.selectedArticle = item
-                                withAnimation(.spring()) {
+                                withAnimation {
+                                    self.listViewModel.selectedArticle = item
                                     self.listViewModel.showArticle = true
                                 }
                             } label: {

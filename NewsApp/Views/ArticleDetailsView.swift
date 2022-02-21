@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ArticleDetailsView: View {
     
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
     
     @EnvironmentObject var listViewModel: ListViewModel
     @State private var showingData = false
@@ -25,7 +25,6 @@ struct ArticleDetailsView: View {
                         .padding(.horizontal)
                         .matchedGeometryEffect(id: "Title - \(article.id)", in: animation)
                         .frame(width: UIScreen.main.bounds.width, alignment: .leading)
-                    
                     
                     if let url = article.imageURL {
                         CacheAsyncImage(url: url, content: { phase in
@@ -55,12 +54,14 @@ struct ArticleDetailsView: View {
                         Divider()
                         Text(article.publishedAt?.dateConvertion() ?? "")
                             .font(.caption)
+                            .padding(.horizontal, 8)
                             .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
                             .opacity(showingData ? 1 : 0)
                             .animation(.spring(), value: self.showingData)
                         Text(article.author ?? "")
                             .font(.caption)
                             .fontWeight(.bold)
+                            .padding(.horizontal, 8)
                             .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
                             .opacity(showingData ? 1 : 0)
                             .animation(.spring(), value: self.showingData)
@@ -75,7 +76,7 @@ struct ArticleDetailsView: View {
             .overlay(
                 ZStack {
                     Button(action: {
-                        withAnimation(.spring()) {
+                        withAnimation {
                             self.listViewModel.showArticle = false
                             self.listViewModel.selectedArticle = nil
                         }
