@@ -9,13 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject var service = ListViewModel()
+    @ObservedObject var model = ListViewModel()
+    @Namespace var animation
     
     var body: some View {
         NavigationView {
-            NewsListView()
-                .environmentObject(service)
+            NewsListView(animation: animation)
+                .environmentObject(model)
         }.navigationViewStyle(.stack)
+            .overlay(
+                ArticleDetailsView(animation: animation)
+                    .environmentObject(model)
+            )
     }
 }
 

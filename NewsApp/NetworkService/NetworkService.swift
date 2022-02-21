@@ -7,7 +7,12 @@
 
 import Foundation
 
-class NewsService: ObservableObject {
+protocol NewsServiceProtocol {
+    var data : News { get }
+    func fetchNews() async throws -> News
+}
+
+class NetworkService: ObservableObject, NewsServiceProtocol {
     
     private let key = "6077a98e4f674d28a5ac3c926511861c"
     
@@ -16,6 +21,10 @@ class NewsService: ObservableObject {
     private let session = URLSession(configuration: .default)
     
     init()  {
+        self.downloadNews()
+    }
+    
+    func downloadNews() {
         Task {
             self.data = try await fetchNews()
         }
@@ -38,6 +47,7 @@ class NewsService: ObservableObject {
         var path = "https://newsapi.org/v2/everything?q=tesla&from=2022-02-16&sortBy=publishedAt&apiKey="
         path += key
         path += "&language=en"
+        
         return URL(string: path)!
     }
     

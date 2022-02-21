@@ -7,18 +7,21 @@
 
 import Foundation
 
-
 class ListViewModel: ObservableObject {
     
-    private var service : NewsService
+    private var service : NetworkService
     @Published var articles = [Article]()
     
+    @Published var showArticle: Bool = false
+    @Published var selectedArticle: Article?
+    
     init() {
-        self.service = NewsService()
+        self.service = NetworkService()
+        
         service.$data
             .map{ $0.articles ?? [] }
-            .receive(on: DispatchQueue.main)
+            .receive(on: OperationQueue.main)
             .assign(to: &$articles)
     }
-    
+
 }
